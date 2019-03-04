@@ -12,3 +12,4 @@ Faruk Ege Hatırnaz
 (Not prepared.)
 
 ## Files
+[Project Proposal](/reports/proposal.pdf)
