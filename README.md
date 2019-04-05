@@ -13,3 +13,4 @@ Faruk Ege Hatırnaz - 21601441
 
 ## Files
 [Project Proposal](/reports/proposal_report.pdf)
+[Design Report](/reports/design_report.pdf)
