@@ -1,0 +1,45 @@
+version: '3'
+
+services:
+
+  # database 
+  judiciary_database:
+    image: mysql:5.7
+    container_name: judiciary_db
+    command: ["mysqld", "--user=mysql", "--lower_case_table_names=1"]
+    ports:
+      - "8082:3306"
+    expose:
+      - '3306'
+    restart: always
+    environment:
+       MYSQL_DATABASE: "judiciary"
+       MYSQL_ROOT_PASSWORD: "root"
+    volumes:
+      - mysql_dev:/var/lib/mysql
+      - ./mysql/init/judiciary.sql:/docker-entrypoint-initdb.d/judiciary.sql
+    networks:
+      - back
+  
+  # web (nginx)
+  judiciary_web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: judiciary_web
+    depends_on:
+      - judiciary_database
+    ports:
+      - '8000:80'
+    volumes:
+      - ./judiciary-www:/var/www/www-dev/
+      - ./nginx/www:/var/www/html/
+    networks:
+      - back
+
+networks:
+  back:
+
+volumes:
+  judiciary_mysql_dev:
+  mysql_dev:
