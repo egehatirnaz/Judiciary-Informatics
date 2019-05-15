@@ -63,7 +63,7 @@
                 <ul class="nav-menu">
                     <li class="menu-active"><a href="/">Lawsuits</a></li>
                     <li><a href="request.php">Request a New Lawsuit</a></li>
-                    <li class="menu-has-children"><a href="">Account - User Userson</a>
+                    <li class="menu-has-children"><a href="#">Account - User Userson</a>
                         <ul>
                             <li><a href="#">Manage Account</a></li>
                             <li><a href="/logout.php">Logout</a></li>
