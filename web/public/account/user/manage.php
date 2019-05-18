@@ -6,9 +6,9 @@
 
 <head>
     <meta charset="utf-8">
-    <title>NJIS - User Lawsuits</title>
+    <title>NJIS - User Account Manager</title>
     <meta name="description"
-        content="See your existing lawsuits - National Judiciary Informatics System">
+        content="Manage your user account - National Judiciary Informatics System">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="" name="keywords">
 
@@ -68,10 +68,10 @@
             <nav id="nav-menu-container">
                 <ul class="nav-menu">
                     <li><a href="lawsuits.php">Lawsuits</a></li>
-                    <li class="menu-active"><a href="">Request a New Lawsuit</a></li>
-                    <li class="menu-has-children"><a>Account - User Userson</a>
+                    <li><a href="request.php">Request a New Lawsuit</a></li>
+                    <li class="menu-has-children menu-active"><a>Account - User Userson</a>
                         <ul>
-                            <li><a href="manage.php">Manage Account</a></li>
+                            <li class="menu-active"><a href="#">Manage Account</a></li>
                             <li><a href="/logout.php">Logout</a></li>
                         </ul>
                     </li>
@@ -88,44 +88,90 @@
         <section>
             <div class="container" style="margin-top:40px;">
                 <div class="section-header">
-                    <h2>Request a New Lawsuit</h2>
-                    <p>Please fill out the information necessary to form a new lawsuit.</p>
+                    <h2>Manage Account Information</h2>
+                    <p>You can update your account information shown in the following fields.</p>
                 </div>
                 <div class="form">
                     <form action="" method="POST" role="form" class="contactForm">
+                        <h4>Citizen Information (Not Changable)</h4>
                         <div class="row">
                             <div class="col-lg-3">
                                 <div class="box wow fadeInLeft form-group">
-                                    <p class="login_description">Victim:</p>
-                                    <input class="login_input" type="text" name="victim" data-rule="required" data-msg="This field is required.">
-                                    <div class="validation"></div>
+                                    <p class="login_description">Surname:</p>
+                                    <input class="login_input" type="text" name="user_surname" disabled>
                                 </div>
+                            </div>
+                            <div class="col-lg-3">
                                 <div class="box wow fadeInLeft form-group">
-                                    <p class="login_description">Suspect:</p>
-                                    <input class="login_input" type="text" name="suspect" data-rule="required" data-msg="This field is required.">
+                                    <p class="login_description">Name:</p>
+                                    <input class="login_input" type="text" name="user_name" disabled>
+                                </div>
+                            </div>
+                            <div class="col-lg-3">
+                                <div class="box wow fadeInLeft form-group">
+                                    <p class="login_description">ID:</p>
+                                    <input class="login_input" type="text" name="user_id" disabled>
+                                </div>
+                            </div>
+                        </div>
+                        <h4>Personal Information</h4>
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <div class="box wow fadeInLeft form-group">
+                                    <p class="login_description">E-mail:</p>
+                                    <input class="login_input" type="text" name="user_email" data-rule="email" data-msg="Please enter a valid email.">
                                     <div class="validation"></div>
                                 </div>
                             </div>
                             <div class="col-lg-3">
-                                <div class="box wow fadeInLeft form-group"> <!-- This should be a dropdown. -->
-                                    <p class="login_description">Category:</p>
-                                    <input class="login_input" type="text" name="category" data-rule="required" data-msg="This field is required.">
-                                    <div class="validation"></div>
-                                </div>
-                                <div class="box wow fadeInLeft form-group"> <!-- This should be a dropdown. -->
-                                    <p class="login_description">Court:</p>
-                                    <input class="login_input" type="text" name="court" data-rule="required" data-msg="This field is required.">
+                                <div class="box wow fadeInLeft form-group">
+                                    <p class="login_description">Phone Number:</p>
+                                    <input class="login_input" type="text" name="user_phone" data-rule="required" data-msg="This field is required.">
                                     <div class="validation"></div>
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-lg-6">
-                                <div class="box wow fadeInLeft form-group">
-                                    <p class="login_description">Description:</p>
-                                    <textarea class="login_input" type="text" name="category" data-rule="required" data-msg="This field is required."></textarea>
+                        <h4>Address Information</h4>
+                        <div class="row" style="margin-top:20px;">
+                            <div class="col-lg-3">
+                                <div class="box wow fadeInLeft form-group" style="margin-bottom:0px;">
+                                    <p class="login_description">Address:</p>
+                                    <textarea class="login_input" type="text" name="user_address" data-rule="required" data-msg="This field is required." style="height:124px;"></textarea>
                                     <div class="validation"></div>
                                 </div>
+                            </div>
+                            <div class="col-lg-3">
+                                <div class="box wow fadeInLeft form-group">
+                                    <p class="login_description">City:</p>
+                                    <input class="login_input" type="text" name="user_city" data-rule="required" data-msg="This field is required.">
+                                    <div class="validation"></div>
+                                </div>
+                                <div class="box wow fadeInLeft form-group">
+                                    <p class="login_description">Zip Code:</p>
+                                    <input class="login_input" type="text" name="user_zipcode" data-rule="required" data-msg="This field is required.">
+                                    <div class="validation"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <h4>Update Password</h4>
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <div class="box wow fadeInLeft form-group">
+                                    <p class="login_description">Password (min. 8 characters):</p>
+                                    <input class="login_input" type="password" name="user_pass" data-rule="minlen:8" data-msg="Please enter at least 8 characters.">
+                                    <div class="validation"></div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3">
+                                <div class="box wow fadeInLeft form-group">
+                                    <p class="login_description">Confirm Password:</p>
+                                    <input class="login_input" type="password" name="user_pass_confirm" data-rule="minlen:8" data-msg="Please enter at least 8 characters.">
+                                    <div class="validation"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row" style="margin-bottom:50px;">
+                            <div class="col-lg-6">
                                 <div class="box wow fadeInLeft">
                                     <input class="signUpButton" type="submit" value="Form" style="width:100%;">
                                 </div>

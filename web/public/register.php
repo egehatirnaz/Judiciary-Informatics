@@ -82,7 +82,7 @@ include 'db_connection.php';
         <section id="login">
             <div class="container" style="margin-top:40px;">
                 <div class="section-header">
-                    <h2>Login</h2>
+                    <h2>Register</h2>
                     <p>Please enter your personal information to register to system. All fields are required.</p>
                 </div>
                 <div class="form">

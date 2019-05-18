@@ -63,9 +63,9 @@
                 <ul class="nav-menu">
                     <li class="menu-active"><a href="/">Lawsuits</a></li>
                     <li><a href="request.php">Request a New Lawsuit</a></li>
-                    <li class="menu-has-children"><a href="#">Account - User Userson</a>
+                    <li class="menu-has-children"><a>Account - User Userson</a>
                         <ul>
-                            <li><a href="#">Manage Account</a></li>
+                            <li><a href="manage.php">Manage Account</a></li>
                             <li><a href="/logout.php">Logout</a></li>
                         </ul>
                     </li>
@@ -91,7 +91,7 @@
                 <div class="card-display" style="margin-top:50px;">
                     <div class="row">
                         <div class="col-lg-6">
-                            <div class="box wow fadeInLeft lawsuit-option">
+                            <div class="box wow fadeInLeft lawsuit-option" style="cursor:pointer" onclick="document.location='request.php'">
                                 <div class="icon"><i class="fa fa-plus-circle"></i></div>
                                 <h4 class="title"><a href="">Request a Lawsuit</a></h4>
                                 <p class="description">Fill out a form to request a new lawsuit.</p>
