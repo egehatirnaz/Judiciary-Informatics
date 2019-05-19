@@ -10,9 +10,9 @@
 
 <head>
     <meta charset="utf-8">
-    <title>NJIS - Judge Trials</title>
+    <title>NJIS - Lawyer Trials</title>
     <meta name="description"
-        content="See your trials - National Judiciary Informatics System">
+        content="See your existing cases - National Judiciary Informatics System">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="" name="keywords">
 
@@ -66,9 +66,10 @@
             <nav id="nav-menu-container">
                 <ul class="nav-menu">
                     <li><a href="cases.php">My Cases</a></li>
+                    <li><a href="formlawsuit.php">Form A Lawsuit</a></li>
+                    <li><a href="possiblecases.php">Possible Cases</a></li>
                     <li class="menu-active"><a href="">Trials</a></li>
-                    <li><a href="conciliators.php">Conciliators</a></li>
-                    <li class="menu-has-children"><a>Account - Judge User Userson</a>
+                    <li class="menu-has-children"><a>Account - Attn. User Userson</a>
                         <ul>
                             <li><a href="manage.php">Manage Account</a></li>
                             <li><a href="/logout.php">Logout</a></li>
