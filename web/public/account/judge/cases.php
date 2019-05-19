@@ -10,9 +10,9 @@
 
 <head>
     <meta charset="utf-8">
-    <title>NJIS - User Lawsuits</title>
+    <title>NJIS - Judge Cases</title>
     <meta name="description"
-        content="See your existing lawsuits - National Judiciary Informatics System">
+        content="See your existing cases - National Judiciary Informatics System">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="" name="keywords">
 
@@ -59,15 +59,14 @@
 
             <div id="logo" class="pull-left">
                 <h1><a href="/" class="scrollto">NJIS - <span>National Judiciary Informatics System</span></a></h1>
-                <!-- Uncomment below if you prefer to use an image logo -->
-                <!-- <a href="#body"><img src="img/logo.png" alt="" title="" /></a>-->
             </div>
 
             <nav id="nav-menu-container">
                 <ul class="nav-menu">
-                    <li class="menu-active"><a href="">Lawsuits</a></li>
-                    <li><a href="request.php">Request a New Lawsuit</a></li>
-                    <li class="menu-has-children"><a>Account - User Userson</a>
+                    <li class="menu-active"><a href="">My Cases</a></li>
+                    <li><a href="trials.php">Trials</a></li>
+                    <li><a href="conciliators.php">Conciliators</a></li>
+                    <li class="menu-has-children"><a>Account - Judge User Userson</a>
                         <ul>
                             <li><a href="manage.php">Manage Account</a></li>
                             <li><a href="/logout.php">Logout</a></li>
@@ -86,48 +85,61 @@
         <section id="services">
             <div class="container" style="margin-top:40px;">
                 <div class="section-header">
-                    <h2>My Lawsuits</h2>
-                    <p>In order to see detailed information, please click on each lawsuit. </p>
+                    <h2>My Cases</h2>
+                    <p>In order to see detailed information, please click on each case. </p>
                 </div>
                 <div class="lawsuit-category">
-                    <a href="#">Ongoing</a> | <a href="#">Previous</a>
+                    <a href="#">Ongoing</a> | <a href="#">Closed</a>
                 </div>
-                <div class="card-display" style="margin-top:50px;">
-                    <div class="row">
-                        <div class="col-lg-6">
-                            <div class="box wow fadeInLeft lawsuit-option" style="cursor:pointer" onclick="document.location='request.php'">
-                                <div class="icon"><i class="fa fa-plus-circle"></i></div>
-                                <h4 class="title"><a href="">Request a Lawsuit</a></h4>
-                                <p class="description">Fill out a form to request a new lawsuit.</p>
+                <div class="card-display" style="margin-top:0px;">
+                    <h4>Ongoing Cases</h4>
+                    <div class="row" id="case-display">
+                        <div class="col-lg-4">
+                            <div class="box wow fadeInLeft lawsuit-option">
+                                <div class="icon"><i class="fa fa-balance-scale"></i></div>
+                                <h4 class="title"><a href="">Case #00001</a></h4>
+                                <p class="description">From: <a href="#">User#0001</a></p><br>
+                                <a href="#">Assign Conciliator</a><br>
+                                <a href="#">Give a Verdict</a>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="box wow fadeInLeft lawsuit-option">
+                                <div class="icon"><i class="fa fa-balance-scale"></i></div>
+                                <h4 class="title"><a href="">Case #00002</a></h4>
+                                <p class="description">From: <a href="#">User#0002</a></p><br>
+                                <a href="#">Assign Conciliator</a><br>
+                                <a href="#">Give a Verdict</a>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="box wow fadeInLeft lawsuit-option">
+                                <div class="icon"><i class="fa fa-balance-scale"></i></div>
+                                <h4 class="title"><a href="">Case #00003</a></h4>
+                                <p class="description">From: <a href="#">User#0003</a></p><br>
+                                <a href="#">Assign Conciliator</a><br>
+                                <a href="#">Give a Verdict</a>
                             </div>
                         </div>
                     </div>
-                    <div class="row" id="lawsuit-display">
+                </div>
+                <div class="card-display" style="margin-top:0px;">
+                    <h4>Closed Cases</h4>
+                    <div class="row" id="closedcase-display">
                         <div class="col-lg-5">
                             <div class="box wow fadeInLeft lawsuit-option">
                                 <div class="icon"><i class="fa fa-gavel"></i></div>
-                                <h4 class="title"><a href="">Lawsuit #00001</a></h4>
-                                <p class="description">Against: <a href="#">User#0001</a></p><br>
-                                <a href="#">Assign Conciliator</a><br>
-                                <a href="#">Negotiate With Conciliator</a>
+                                <h4 class="title"><a href="">Closed Case #00001</a></h4>
+                                <p class="description">From: <a href="#">User#0001</a></p><br>
+                                <p class="description">Date of Finalization : <a href="#">15.05.2019</a></p><br>
                             </div>
                         </div>
                         <div class="col-lg-5">
                             <div class="box wow fadeInLeft lawsuit-option">
                                 <div class="icon"><i class="fa fa-gavel"></i></div>
-                                <h4 class="title"><a href="">Lawsuit #00002</a></h4>
-                                <p class="description">Against: <a href="#">User#0002</a></p><br>
-                                <a href="#">Assign Conciliator</a><br>
-                                <a href="#">Negotiate With Conciliator</a>
-                            </div>
-                        </div>
-                        <div class="col-lg-5">
-                            <div class="box wow fadeInLeft lawsuit-option">
-                                <div class="icon"><i class="fa fa-gavel"></i></div>
-                                <h4 class="title"><a href="">Lawsuit #00003</a></h4>
-                                <p class="description">Against: <a href="#">User#0003</a></p><br>
-                                <a href="#">Assign Conciliator</a><br>
-                                <a href="#">Negotiate With Conciliator</a>
+                                <h4 class="title"><a href="">Closed Case #00002</a></h4>
+                                <p class="description">From: <a href="#">User#0002</a></p><br>
+                                <p class="description">Date of Finalization : <a href="#">15.05.2019</a></p><br>
                             </div>
                         </div>
                     </div>
