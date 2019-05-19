@@ -1,5 +1,18 @@
 <?php
     include 'db_connection.php';
+
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' ){
+        // Check user credentials, if true then create a sesh var
+
+        // debug: assume it is valid.
+        $user = ['user_type' => "user", 'user_id' => "", 'user_hash' => ""];
+        $_SESSION['credentials'] = $user;
+
+        // depending on the user type, redir.
+        header("Location: account/user/lawsuits.php");
+        die();
+
+    }
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -90,7 +103,7 @@
                     <p>Please enter your account information to login.</p>
                 </div>
                 <div class="form">
-                    <form action="" method="POST" role="form" class="contactForm">
+                    <form action="/login.php" method="POST" role="form" class="contactForm">
                         <div class="row">
                             <div class="col-lg-6">
                                 <div class="box wow fadeInLeft form-group">
@@ -105,7 +118,6 @@
                                 </div>
                                 <div class="box wow fadeInLeft">
                                     <input class="signUpButton" type="submit" value="Login">
-                                    
                                 </div>
                             </div>
                         </div>

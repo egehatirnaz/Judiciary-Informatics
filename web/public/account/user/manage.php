@@ -1,5 +1,9 @@
 <?php
     include '../../db_connection.php';
+    if(!isLoggedIn()){
+        header("Location: ../../login.php");
+        die();
+    }
 ?>
 <!DOCTYPE html>
 <html lang="en">
