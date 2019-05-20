@@ -3,7 +3,52 @@
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST' ){
         // Check user credentials, if true then create a sesh var
+        $citizen_no = mysqli_real_escape_string($db,$_POST['id']);
+        $pass = hash_pass(mysqli_real_escape_string($db,$_POST['pass']), $citizen_no); 
+        
+        $query = "SELECT id FROM User WHERE `citizen_no` = '$citizen_no' AND `password` = '$pass'";
+        if ($result = mysqli_query($db,$query)){
+            $row = mysqli_fetch_array($result,MYSQLI_ASSOC);
+            $id = $row['id'];
+            $count = mysqli_num_rows($result);
 
+            // If count is 1, user exists.
+            if ($count == 1) {
+
+                // Find the userrole.
+                $query2 = "SELECT * FROM UserRoleTable WHERE `user_id` = '$id'";
+                if ($result = mysqli_query($db,$query2)){
+                    $row = mysqli_fetch_array($result,MYSQLI_ASSOC);
+                    $role_id = $row['role_id'];
+                    $count = mysqli_num_rows($result);
+                    // If count is 1, user has a role.
+                    if ($count == 1) {
+                        // Set the session cookie
+                        $user = ['user_type' => $role_id, 'user_id' => $id, 'user_hash' => ""];
+                        $_SESSION['credentials'] = $user;
+
+                        // Redirect according to the role.
+                        if ($role_id == "1"){ // Citizen
+                            header("Location: account/user/lawsuits.php");
+                        } else if ($role_id == "2"){ // Judge
+                            header("Location: account/judge/cases.php");
+                        } else if ($role_id == "3"){ // Lawyer
+                            header("Location: account/lawyer/cases.php");
+                        } else if ($role_id == "4"){ // Conciliator
+                            header("Location: account/conciliator/cases.php");
+                        } else {
+                            header("Location: login.php");
+                        }
+                    } else {
+                        header("Location: login.php");
+                    }    
+            } else {
+                $msg = "Error: Invalid ID or password.";
+            }
+        } else {
+            $msg = "Error: Invalid ID or password.";
+        }
+        /*
         // debug: assume it is valid.
         $user = ['user_type' => "user", 'user_id' => "", 'user_hash' => ""];
         $_SESSION['credentials'] = $user;
@@ -11,7 +56,10 @@
         // depending on the user type, redir.
         header("Location: account/user/lawsuits.php");
         die();
-
+        */
+        } else {
+            $msg = "Error: Something went wrong.";
+        }
     }
 ?>
 <!DOCTYPE html>
