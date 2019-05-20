@@ -9,6 +9,9 @@ session_start();
 function isLoggedIn(){
     return isset($_SESSION['credentials']);
 }
+function hash_pass($str, $salt){
+    return md5($salt.$str);
+}
 
 $servername = "mysql";
 $username = "dev";

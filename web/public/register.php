@@ -1,5 +1,107 @@
 <?php
 include 'db_connection.php';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' ){
+    $msg = "";
+
+    // Validate the inputs.
+    if(isset(
+        $_POST['user_id'], 
+        $_POST['user_surname'],
+        $_POST['user_name'], 
+        $_POST['user_email'],
+        $_POST['user_phone'],
+        $_POST['user_pass'],
+        $_POST['user_pass_confirm'],
+        $_POST['user_address'],
+        $_POST['user_city'],
+        $_POST['user_zipcode']
+    )){
+        // Secure the inputs.
+        $citizen_no = mysqli_real_escape_string($db, $_POST['user_id']);
+        $name = mysqli_real_escape_string($db, $_POST['user_name']);
+        $surname = mysqli_real_escape_string($db, $_POST['user_surname']);
+        $email_address = mysqli_real_escape_string($db, $_POST['user_email']);
+        $phone_no = mysqli_real_escape_string($db, $_POST['user_phone']);
+        $unhashed_pass = mysqli_real_escape_string($db, $_POST['user_pass']);
+        $unhashed_pass_confirm = mysqli_real_escape_string($db, $_POST['user_pass_confirm']);
+        $address = mysqli_real_escape_string($db, $_POST['user_address']);
+        $city = mysqli_real_escape_string($db, $_POST['user_city']);
+        $zip_code = mysqli_real_escape_string($db, $_POST['user_zipcode']);
+
+        // Confirm the pass and its validation.
+        if($unhashed_pass === $unhashed_pass_confirm){
+            // Passwords are matching. Hash that shit.
+            $hashed_pass = hash_pass($unhashed_pass, $citizen_no);
+            // Insert into the db.
+            $query = "INSERT INTO User (
+                `citizen_no`,
+                `name`,
+                `surname`,
+                `password`,
+                `phone_no`,
+                `email_address`,
+                `address`,
+                `city`,
+                `zip_code`
+            )
+            VALUES (
+                '$citizen_no',
+                '$name',
+                '$surname',
+                '$hashed_pass',
+                '$phone_no',
+                '$email_address',
+                '$address',
+                '$city',
+                '$zip_code'
+            )";
+            if (mysqli_query($db, $query)) {
+                // Insert into userRoleTable for the user role
+                $query2 = "INSERT INTO UserRoleTable (
+                    `user_id`,
+                    `role_id`
+                ) 
+                VALUES (
+                    (SELECT id from User where citizen_no = '$citizen_no'),
+                    '1'
+                )";
+                if (mysqli_query($db, $query2)) {
+                    $msg = "Success! You have registered into the system.";
+                    echo '<script>
+                    alert("'.$msg.'");
+                    window.location.replace("index.php");
+                    </script>';
+                    //header("Location: index.php");
+                } else {
+                    // Error - UserRoleTable table.
+                    $msg = "Error! Could not assign user role." . mysqli_error($db) . "";
+                    die($msg);
+                }
+            } else { // Error - User table.
+                $msg =  "Error: " . mysqli_error($db); //bad idea.
+                die($msg);
+            }
+        } else {
+            // Passwords dont match. Give error.
+            $msg = "Error: Password and password confirmation does not match.";
+        }
+
+    } else { // Missing inputs. 
+        $msg = "Error: Some input fields are missing.";
+    }
+    echo '<script>alert("'.$msg.'");</script>';    
+
+    /*
+    // debug: assume it is valid.
+    $user = ['user_type' => "user", 'user_id' => "", 'user_hash' => ""];
+    $_SESSION['credentials'] = $user;
+
+    // depending on the user type, redir.
+    header("Location: account/user/lawsuits.php");
+    die();
+    */
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">

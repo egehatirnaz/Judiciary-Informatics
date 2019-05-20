@@ -177,7 +177,7 @@
                         <div class="row" style="margin-bottom:50px;">
                             <div class="col-lg-6">
                                 <div class="box wow fadeInLeft">
-                                    <input class="signUpButton" type="submit" value="Form" style="width:100%;">
+                                    <input class="signUpButton" type="submit" value="Update" style="width:100%;">
                                 </div>
                             </div>
                         </div>
