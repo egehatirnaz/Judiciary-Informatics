@@ -24,7 +24,7 @@
                     // If count is 1, user has a role.
                     if ($count == 1) {
                         // Set the session cookie
-                        $user = ['user_type' => $role_id, 'user_id' => $id, 'user_hash' => ""];
+                        $user = ['user_type' => $role_id, 'user_id' => $id, 'user_hash' => hash_pass($id, $role_id)];
                         $_SESSION['credentials'] = $user;
 
                         // Redirect according to the role.

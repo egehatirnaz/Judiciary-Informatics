@@ -1,6 +1,6 @@
 <?php
     include '../../db_connection.php';
-    if(!isLoggedIn()){
+    if(!isLoggedIn(3)){
         header("Location: ../../login.php");
         die();
     }
