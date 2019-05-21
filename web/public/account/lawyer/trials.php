@@ -201,8 +201,11 @@
                                         Court Room: '.$pt['court_room'].'<br>
                                         Assigned Judge: <a href="#">'.$pt['judgeID'].'</a><br>
                                         Description: '.$pt['description'].'
-                                        </p><br>
-                                        <a href="#">See Final Decision</a>
+                                        <span style="display:none;" id="finaldecision_'.$pt['id'].'">
+                                    <br><br>Final Decision: '.$pt['final_decision'].'
+                                    </span>
+                                    </p><br>
+                                    <a href="#finaldecision_'.$pt['id'].'" onclick="$(\'#finaldecision_'.$pt['id'].'\').fadeToggle(\'slow\');">See Final Decision</a>
                                     </div>
                                 </div>';
                             }
