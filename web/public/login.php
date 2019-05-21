@@ -5,7 +5,6 @@
         // Check user credentials, if true then create a sesh var
         $citizen_no = mysqli_real_escape_string($db,$_POST['id']);
         $pass = hash_pass(mysqli_real_escape_string($db,$_POST['pass']), $citizen_no); 
-        
         $query = "SELECT id FROM User WHERE `citizen_no` = '$citizen_no' AND `password` = '$pass'";
         if ($result = mysqli_query($db,$query)){
             $row = mysqli_fetch_array($result,MYSQLI_ASSOC);

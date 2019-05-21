@@ -4,6 +4,39 @@
         header("Location: ../../login.php");
         die();
     }
+    $userID = $_SESSION['credentials']['user_id'];
+    $ongoing_cases = [];
+    $query = "SELECT l.* , s.citizen_no AS suspectNo, v.citizen_no AS victimNo FROM Lawsuit l
+    INNER JOIN User s 
+    ON l.suspect_id = s.id
+    INNER JOIN User v 
+    ON l.victim_id = v.id 
+    WHERE l.judge_id = '$userID' AND l.current_status = '0'";
+    if ($result = mysqli_query($db,$query)){
+        $count = mysqli_num_rows($result);
+        if ($count == 1) {
+            while($row = mysqli_fetch_array($result,MYSQLI_ASSOC)){
+                array_push($ongoing_cases, $row);
+            }
+            
+            
+        }
+    }
+    $previous_cases = [];
+    $query = "SELECT l.* , s.citizen_no AS suspectNo, v.citizen_no AS victimNo FROM Lawsuit l
+    INNER JOIN User s 
+    ON l.suspect_id = s.id
+    INNER JOIN User v 
+    ON l.victim_id = v.id 
+    WHERE l.judge_id = '$userID' AND l.current_status = '1'";
+    if ($result = mysqli_query($db,$query)){
+        $count = mysqli_num_rows($result);
+        if ($count == 1) {
+            while($row = mysqli_fetch_array($result,MYSQLI_ASSOC)){
+                array_push($previous_cases, $row);
+            }
+        }
+    }
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -86,7 +119,7 @@
             <div class="container" style="margin-top:40px;">
                 <div class="section-header">
                     <h2>My Cases</h2>
-                    <p>In order to see detailed information, please click on each case. </p>
+                    <p>Your ongoing and previous cases details are shown below:</p>
                 </div>
                 <div class="lawsuit-category">
                     <a href="#">Ongoing</a> | <a href="#">Closed</a>
@@ -94,6 +127,24 @@
                 <div class="card-display" style="margin-top:0px;">
                     <h4>Ongoing Cases</h4>
                     <div class="row" id="case-display">
+                        <?php
+                            foreach($ongoing_cases as $oc){
+                                echo '
+                                <div class="col-lg-4">
+                                    <div class="box wow fadeInLeft lawsuit-option">
+                                        <div class="icon"><i class="fa fa-balance-scale"></i></div>
+                                        <h4 class="title"><a href="">Case #'.$oc['id'].'</a></h4>
+                                        <p class="description">
+                                        Victim ID: <a href="#">'.$oc['victimNo'].'</a><br>
+                                        Suspect ID: <a href="#">'.$oc['suspectNo'].'</a></p><br>
+                                        <a href="#">Assign Conciliator</a><br>
+                                        <a href="#">Give a Verdict</a>
+                                    </div>
+                                </div>
+                                ';
+                            }
+                        ?>
+                        <!--
                         <div class="col-lg-4">
                             <div class="box wow fadeInLeft lawsuit-option">
                                 <div class="icon"><i class="fa fa-balance-scale"></i></div>
@@ -121,11 +172,29 @@
                                 <a href="#">Give a Verdict</a>
                             </div>
                         </div>
+                        -->
                     </div>
                 </div>
                 <div class="card-display" style="margin-top:0px;">
                     <h4>Closed Cases</h4>
                     <div class="row" id="closedcase-display">
+                        <?php
+                            foreach($previous_cases as $pc){
+                                echo '
+                                <div class="col-lg-4">
+                                    <div class="box wow fadeInLeft lawsuit-option">
+                                        <div class="icon"><i class="fa fa-balance-scale"></i></div>
+                                        <h4 class="title"><a href="">Case #'.$pc['id'].'</a></h4>
+                                        <p class="description">
+                                        Victim ID: <a href="#">'.$pc['victimNo'].'</a><br>
+                                        Suspect ID: <a href="#">'.$pc['suspectNo'].'</a></p><br>
+                                        <a href="#">See Final Verdict</a>
+                                    </div>
+                                </div>
+                                ';
+                            }
+                        ?>
+                        <!--
                         <div class="col-lg-5">
                             <div class="box wow fadeInLeft lawsuit-option">
                                 <div class="icon"><i class="fa fa-gavel"></i></div>
@@ -142,6 +211,7 @@
                                 <p class="description">Date of Finalization : <a href="#">15.05.2019</a></p><br>
                             </div>
                         </div>
+                        -->
                     </div>
                 </div>
             </div>

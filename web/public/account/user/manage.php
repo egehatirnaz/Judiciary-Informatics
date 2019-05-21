@@ -1,9 +1,106 @@
 <?php
-    include '../../db_connection.php';
-    if(!isLoggedIn(1)){
-        header("Location: ../../login.php");
-        die();
+include '../../db_connection.php';
+if (!isLoggedIn(1)) {
+    header("Location: ../../login.php");
+    die();
+}
+
+$userID = $_SESSION['credentials']['user_id'];
+
+// Get user details for populating the input fields with existing data.
+$query = "SELECT * FROM User WHERE `id` = '$userID'";
+if ($result = mysqli_query($db, $query)) {
+    $count = mysqli_num_rows($result);
+    // If count is 1, user exists.
+    if ($count == 1) {
+        $row = mysqli_fetch_array($result, MYSQLI_ASSOC);
+        $citizen_no = $row['citizen_no'];
+        $name = $row['name'];
+        $surname = $row['surname'];
+        $phone_no = $row['phone_no'];
+        $email_address = $row['email_address'];
+        $address = $row['address'];
+        $city = $row['city'];
+        $zip_code = $row['zip_code'];
     }
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $userID = $_SESSION['credentials']['user_id'];
+    $msg = "";
+    // Check the current password control.
+    $unhashed_pass = mysqli_real_escape_string($db, $_POST['password']);
+    $pass = hash_pass($unhashed_pass, $citizen_no);
+    $query = "SELECT id FROM User WHERE `id` = '$userID' AND `password` = '$pass'";
+    if ($result = mysqli_query($db, $query)) {
+        $count = mysqli_num_rows($result);
+        // If count is 1, user exists.
+        if ($count == 1) {
+            // Validate the inputs.
+            if (isset($userID,
+            $_POST['phone_no'],
+            $_POST['email_address'],
+            $_POST['address'],
+            $_POST['city'],
+            $_POST['zip_code'])){
+                // Secure the inputs.
+                $new_phone_no = mysqli_real_escape_string($db, $_POST['phone_no']);
+                $new_email_address = mysqli_real_escape_string($db, $_POST['email_address']);
+                $new_address = mysqli_real_escape_string($db, $_POST['address']);
+                $new_city = mysqli_real_escape_string($db, $_POST['city']);
+                $new_zip_code = mysqli_real_escape_string($db, $_POST['zip_code']);
+                
+                if (!empty($_POST['new_password']) && !empty($_POST['new_password_confirm'])) {
+                    // The user wants to change their password as well.
+                    // Check if they match:
+                    if ($_POST['new_password'] == $_POST['new_password_confirm']) {
+                        $new_password = hash_pass(mysqli_real_escape_string($db, $_POST['new_password']), $citizen_no);
+
+                        // Query is relevant to pass change.
+                        $query = "UPDATE User SET 
+                                `password` = '$new_password',
+                                `phone_no` = '$new_phone_no',
+                                `email_address` = '$new_email_address',
+                                `address` = '$new_address',
+                                `city` = '$new_city',
+                                `zip_code` = '$new_zip_code' 
+                            WHERE `id` = $userID";
+                    } else {
+                        $msg = "Error! New password and its confirmation doesn't match.";
+                        echo $msg . '';
+                        echo '<script>alert("' . $msg . '");</script>';
+                    }
+                } else {
+                    // Insert the new data.
+                    $query = "UPDATE User SET 
+                                `phone_no` = '$new_phone_no',
+                                `email_address` = '$new_email_address',
+                                `address` = '$new_address',
+                                `city` = '$new_city',
+                                `zip_code` = '$new_zip_code' 
+                            WHERE `id` = $userID";
+                }
+
+                // Proceed as normal.
+                if (mysqli_query($db, $query)) {
+                    $msg = "Success! Your information is updated.";
+                    echo '<script>alert("' . $msg . '");window.location.replace("manage.php");</script>';
+                } else {
+                    $msg = "Error! Invalid entry." . mysqli_error($db) . "";
+                    echo '<script>alert("' . $msg . '");</script>';
+                }
+            } else {
+                $msg = "Error! Invalid password and user.";
+                echo '<script>alert("' . $msg . '");</script>';
+            }
+        }
+    } else {
+        $msg = "Error! Invalid password.";
+        echo '<script>alert("' . $msg . '");</script>';
+        var_dump(mysqli_error($db));
+    }
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -11,8 +108,7 @@
 <head>
     <meta charset="utf-8">
     <title>NJIS - User Account Manager</title>
-    <meta name="description"
-        content="Manage your user account - National Judiciary Informatics System">
+    <meta name="description" content="Manage your user account - National Judiciary Informatics System">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="" name="keywords">
 
@@ -37,21 +133,24 @@
     <!-- Main Stylesheet File -->
     <link href="../../css/style.css" rel="stylesheet">
     <style>
-        .login_description{
-            margin:0;
+        .login_description {
+            margin: 0;
             margin-bottom: 5px;
         }
-        .login_input{
-            margin-bottom:20px;
-            width:100%;
+
+        .login_input {
+            margin-bottom: 20px;
+            width: 100%;
         }
-        .lawsuit-option{
-            padding-left:0px;
+
+        .lawsuit-option {
+            padding-left: 0px;
         }
-        textarea{
-            margin-bottom:20px;
-            width:100%;
-            height:100px;
+
+        textarea {
+            margin-bottom: 20px;
+            width: 100%;
+            height: 100px;
         }
     </style>
 </head>
@@ -60,7 +159,7 @@
     <!--==========================
     Header
   ============================-->
-  <header id="header">
+    <header id="header">
         <div class="container">
 
             <div id="logo" class="pull-left">
@@ -102,19 +201,19 @@
                             <div class="col-lg-3">
                                 <div class="box wow fadeInLeft form-group">
                                     <p class="login_description">Surname:</p>
-                                    <input class="login_input" type="text" name="user_surname" disabled>
+                                    <input class="login_input" type="text" name="surname" <?php echo 'value="' . $surname . '"'; ?> disabled>
                                 </div>
                             </div>
                             <div class="col-lg-3">
                                 <div class="box wow fadeInLeft form-group">
                                     <p class="login_description">Name:</p>
-                                    <input class="login_input" type="text" name="user_name" disabled>
+                                    <input class="login_input" type="text" name="name" <?php echo 'value="' . $name . '"'; ?> disabled>
                                 </div>
                             </div>
                             <div class="col-lg-3">
                                 <div class="box wow fadeInLeft form-group">
                                     <p class="login_description">ID:</p>
-                                    <input class="login_input" type="text" name="user_id" disabled>
+                                    <input class="login_input" type="text" name="citizen_no" <?php echo 'value="' . $citizen_no . '"'; ?> disabled>
                                 </div>
                             </div>
                         </div>
@@ -123,14 +222,14 @@
                             <div class="col-lg-3">
                                 <div class="box wow fadeInLeft form-group">
                                     <p class="login_description">E-mail:</p>
-                                    <input class="login_input" type="text" name="user_email" data-rule="email" data-msg="Please enter a valid email.">
+                                    <input class="login_input" type="text" name="email_address" <?php echo 'value="' . $email_address . '"'; ?> data-rule="email" data-msg="Please enter a valid email.">
                                     <div class="validation"></div>
                                 </div>
                             </div>
                             <div class="col-lg-3">
                                 <div class="box wow fadeInLeft form-group">
                                     <p class="login_description">Phone Number:</p>
-                                    <input class="login_input" type="text" name="user_phone" data-rule="required" data-msg="This field is required.">
+                                    <input class="login_input" type="text" name="phone_no" <?php echo 'value="' . $phone_no . '"'; ?> data-rule="required" data-msg="This field is required.">
                                     <div class="validation"></div>
                                 </div>
                             </div>
@@ -140,19 +239,19 @@
                             <div class="col-lg-3">
                                 <div class="box wow fadeInLeft form-group" style="margin-bottom:0px;">
                                     <p class="login_description">Address:</p>
-                                    <textarea class="login_input" type="text" name="user_address" data-rule="required" data-msg="This field is required." style="height:124px;"></textarea>
+                                    <textarea class="login_input" type="text" name="address" data-rule="required" data-msg="This field is required." style="height:124px;"><?php echo $address . ''; ?></textarea>
                                     <div class="validation"></div>
                                 </div>
                             </div>
                             <div class="col-lg-3">
                                 <div class="box wow fadeInLeft form-group">
                                     <p class="login_description">City:</p>
-                                    <input class="login_input" type="text" name="user_city" data-rule="required" data-msg="This field is required.">
+                                    <input class="login_input" type="text" name="city" <?php echo 'value="' . $city . '"'; ?> data-rule="required" data-msg="This field is required.">
                                     <div class="validation"></div>
                                 </div>
                                 <div class="box wow fadeInLeft form-group">
                                     <p class="login_description">Zip Code:</p>
-                                    <input class="login_input" type="text" name="user_zipcode" data-rule="required" data-msg="This field is required.">
+                                    <input class="login_input" type="text" name="zip_code" <?php echo 'value="' . $zip_code . '"'; ?> data-rule="required" data-msg="This field is required.">
                                     <div class="validation"></div>
                                 </div>
                             </div>
@@ -162,14 +261,26 @@
                             <div class="col-lg-3">
                                 <div class="box wow fadeInLeft form-group">
                                     <p class="login_description">Password (min. 8 characters):</p>
-                                    <input class="login_input" type="password" name="user_pass" data-rule="minlen:8" data-msg="Please enter at least 8 characters.">
+                                    <!--input class="login_input" type="password" name="new_password" data-rule="minlen:8" data-msg="Please enter at least 8 characters."-->
+                                    <input class="login_input" type="password" name="new_password">
                                     <div class="validation"></div>
                                 </div>
                             </div>
                             <div class="col-lg-3">
                                 <div class="box wow fadeInLeft form-group">
                                     <p class="login_description">Confirm Password:</p>
-                                    <input class="login_input" type="password" name="user_pass_confirm" data-rule="minlen:8" data-msg="Please enter at least 8 characters.">
+                                    <!--input class="login_input" type="password" name="new_password_confirm" data-rule="minlen:8" data-msg="Please enter at least 8 characters."-->
+                                    <input class="login_input" type="password" name="new_password_confirm">
+                                    <div class="validation"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <h4>Please enter your current password to confirm the changes.</h4>
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <div class="box wow fadeInLeft form-group">
+                                    <p class="login_description">Current Password:</p>
+                                    <input class="login_input" type="password" name="password" data-rule="minlen:8" data-msg="Please enter at least 8 characters.">
                                     <div class="validation"></div>
                                 </div>
                             </div>

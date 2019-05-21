@@ -3,7 +3,7 @@ include 'db_connection.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' ){
     $msg = "";
-
+    
     // Validate the inputs.
     if(isset(
         $_POST['user_id'], 
