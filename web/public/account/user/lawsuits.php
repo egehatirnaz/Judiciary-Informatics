@@ -207,9 +207,10 @@
                                         <p class="description">
                                         <b>Victim ID: <a href="#">'.$oc['victimNo'].'</a></b><br>
                                         Suspect ID: <a href="#">'.$oc['suspectNo'].'</a><br>
-                                        Description: '.$oc['description'].'<br><br>
+                                        Description: '.$oc['description'].'<br>
+                                        <b>The case is open and in progress.</b><br><br>
                                         </p>
-                                        <a href="#">Negotiate with Conciliator</a><br>
+                                        
                                     </div>
                                 </div>
                                 ';

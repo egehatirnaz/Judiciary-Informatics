@@ -118,9 +118,10 @@
                                     <p class="description">
                                     Victim ID: <a href="#">'.$oc['victimNo'].'</a><br>
                                     Suspect ID: <a href="#">'.$oc['suspectNo'].'</a><br>
+                                    Category: '.$oc['case_category'].'<br>
                                     Description: '.$oc['description'].'<br><br>
                                     </p>
-                                    <a href="#">Accept the Case</a><br>
+                                    <a href="accept.php?caseID='.$oc['id'].'">Accept the Case</a><br>
                                 </div>
                             </div>
                             ';
