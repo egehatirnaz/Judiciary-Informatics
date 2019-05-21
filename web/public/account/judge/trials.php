@@ -128,7 +128,7 @@
                     <p>Your ongoing and previous trial details are the shown below:</p>
                 </div>
                 <div class="lawsuit-category">
-                    <a href="#">Ongoing</a> | <a href="#">Previous</a>
+                    <a href="#case-display">Ongoing</a> | <a href="#closedcase-display">Previous</a>
                 </div>
                 <div class="card-display" style="margin-top:0px;">
                     <h4>Ongoing Trials</h4>

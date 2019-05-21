@@ -122,7 +122,7 @@
                     <p>Your ongoing and previous case details are shown below:</p>
                 </div>
                 <div class="lawsuit-category">
-                    <a href="#">Ongoing</a> | <a href="#">Closed</a>
+                    <a href="#case-display">Ongoing</a> | <a href="#closedcase-display">Closed</a>
                 </div>
                 <div class="card-display" style="margin-top:0px;">
                     <h4>Ongoing Cases</h4>
