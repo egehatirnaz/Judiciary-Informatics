@@ -14,7 +14,7 @@
     WHERE l.judge_id = '$userID' AND l.current_status = '0'";
     if ($result = mysqli_query($db,$query)){
         $count = mysqli_num_rows($result);
-        if ($count == 1) {
+        if ($count > 0) {
             while($row = mysqli_fetch_array($result,MYSQLI_ASSOC)){
                 array_push($ongoing_cases, $row);
             }
@@ -31,7 +31,7 @@
     WHERE l.judge_id = '$userID' AND l.current_status = '1'";
     if ($result = mysqli_query($db,$query)){
         $count = mysqli_num_rows($result);
-        if ($count == 1) {
+        if ($count > 0) {
             while($row = mysqli_fetch_array($result,MYSQLI_ASSOC)){
                 array_push($previous_cases, $row);
             }
@@ -99,7 +99,7 @@
                     <li class="menu-active"><a href="">My Cases</a></li>
                     <li><a href="trials.php">Trials</a></li>
                     <li><a href="conciliators.php">Conciliators</a></li>
-                    <li class="menu-has-children"><a>Account - Judge User Userson</a>
+                    <li class="menu-has-children"><a>Account - Judge <?php echo getUsername($db);?></a>
                         <ul>
                             <li><a href="manage.php">Manage Account</a></li>
                             <li><a href="/logout.php">Logout</a></li>
@@ -186,9 +186,10 @@
                                         <div class="icon"><i class="fa fa-balance-scale"></i></div>
                                         <h4 class="title"><a href="">Case #'.$pc['id'].'</a></h4>
                                         <p class="description">
+                                        Date of Finalization: '.date("d.m.Y  H:i",$pc['finalization_date']).'<br><br>
                                         Victim ID: <a href="#">'.$pc['victimNo'].'</a><br>
                                         Suspect ID: <a href="#">'.$pc['suspectNo'].'</a></p><br>
-                                        <a href="#">See Final Verdict</a>
+                                        <a href="#">See Final Decision</a>
                                     </div>
                                 </div>
                                 ';

@@ -172,7 +172,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <ul class="nav-menu">
                     <li><a href="lawsuits.php">Lawsuits</a></li>
                     <li><a href="request.php">Request a New Lawsuit</a></li>
-                    <li class="menu-has-children menu-active"><a>Account - User Userson</a>
+                    <li class="menu-has-children menu-active"><a>Account - <?php echo getUsername($db);?></a>
                         <ul>
                             <li class="menu-active"><a href="#">Manage Account</a></li>
                             <li><a href="/logout.php">Logout</a></li>

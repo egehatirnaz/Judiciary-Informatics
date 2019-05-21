@@ -69,7 +69,7 @@
                     <li><a href="formlawsuit.php">Form A Lawsuit</a></li>
                     <li><a href="possiblecases.php">Possible Cases</a></li>
                     <li class="menu-active"><a href="">Trials</a></li>
-                    <li class="menu-has-children"><a>Account - Attn. User Userson</a>
+                    <li class="menu-has-children"><a>Account - Attn. <?php echo getUsername($db);?></a>
                         <ul>
                             <li><a href="manage.php">Manage Account</a></li>
                             <li><a href="/logout.php">Logout</a></li>

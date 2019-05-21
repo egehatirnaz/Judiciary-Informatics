@@ -105,7 +105,7 @@
                     <li><a href="cases.php">My Cases</a></li>
                     <li class="menu-active"><a href="">Trials</a></li>
                     <li><a href="conciliators.php">Conciliators</a></li>
-                    <li class="menu-has-children"><a>Account - Judge User Userson</a>
+                    <li class="menu-has-children"><a>Account - Judge <?php echo getUsername($db);?></a>
                         <ul>
                             <li><a href="manage.php">Manage Account</a></li>
                             <li><a href="/logout.php">Logout</a></li>
