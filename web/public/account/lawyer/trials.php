@@ -16,7 +16,7 @@
     WHERE ls.filed_lawyer_id = '$userID' AND ls.current_status = '0'";
     if ($result = mysqli_query($db,$query)){
         $count = mysqli_num_rows($result);
-        if ($count == 1) {
+        if ($count > 0) {
             while($row = mysqli_fetch_array($result,MYSQLI_ASSOC)){
                 array_push($ongoing_trials, $row);
             }
@@ -32,7 +32,7 @@
     WHERE ls.filed_lawyer_id = '$userID' AND ls.current_status = '1'";
     if ($result = mysqli_query($db,$query)){
         $count = mysqli_num_rows($result);
-        if ($count == 1) {
+        if ($count > 0) {
             while($row = mysqli_fetch_array($result,MYSQLI_ASSOC)){
                 array_push($previous_trials, $row);
             }

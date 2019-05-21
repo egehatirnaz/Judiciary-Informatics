@@ -13,10 +13,10 @@
     INNER JOIN User v ON ls.victim_id = v.id 
     INNER JOIN User la ON ls.filed_lawyer_id = la.id
     INNER JOIN Court c ON ls.court_id = c.id
-    WHERE ls.judge_id = '$userID' AND ls.current_status = '0'";
+    WHERE ls.judge_id = '$userID' AND l.current_status = '0'";
     if ($result = mysqli_query($db,$query)){
         $count = mysqli_num_rows($result);
-        if ($count == 1) {
+        if ($count > 0) {
             while($row = mysqli_fetch_array($result,MYSQLI_ASSOC)){
                 array_push($ongoing_trials, $row);
             }
@@ -31,16 +31,15 @@
     INNER JOIN User v ON ls.victim_id = v.id 
     INNER JOIN User la ON ls.filed_lawyer_id = la.id
     INNER JOIN Court c ON ls.court_id = c.id
-    WHERE ls.judge_id = '$userID' AND ls.current_status = '1'";
+    WHERE ls.judge_id = '$userID' AND l.current_status = '1'";
     if ($result = mysqli_query($db,$query)){
         $count = mysqli_num_rows($result);
-        if ($count == 1) {
+        if ($count > 0) {
             while($row = mysqli_fetch_array($result,MYSQLI_ASSOC)){
                 array_push($previous_trials, $row);
             }
         }
     }
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -148,7 +147,7 @@
                                         Assigned Lawyer: <a href="#">'.$ot['lawyerID'].'</a><br>
                                         Description: '.$ot['description'].'
                                         </p><br>
-                                        <a href="#">Give Final Decision on Trial</a>
+                                        <a href="verdict_trials.php?caseID='.$ot['id'].'">Give Final Decision on Trial</a>
                                     </div>
                                 </div>';
                             }
@@ -195,7 +194,7 @@
                                         <div class="icon"><i class="fa fa-gavel"></i></div>
                                         <h4 class="title"><a href="">Trial #'.$pt['id'].'</a></h4>
                                         <p class="description">
-                                        Date of Finalization: '.date("d.m.Y  H:i",$pt['finalization_date']).'<br><br>
+                                        Date of Finalization: '.date("d.m.Y  H:i",$pt['end_date']).'<br><br>
                                         Victim: <a href="#">'.$pt['victimID'].'</a><br>
                                         Suspect: <a href="#">'.$pt['suspectID'].'</a>
                                         <br><br>
@@ -203,8 +202,11 @@
                                         Court Room: '.$pt['court_room'].'<br>
                                         Assigned Lawyer: <a href="#">'.$pt['lawyerID'].'</a><br>
                                         Description: '.$pt['description'].'
+                                        <span style="display:none;" id="finaldecision_'.$pt['id'].'">
+                                            <br><br>Final Decision: '.$pt['final_decision'].'
+                                        </span>
                                         </p><br>
-                                        <a href="#">See Final Decision</a>
+                                        <a href="#finaldecision_'.$pt['id'].'" onclick="$(\'#finaldecision_'.$pt['id'].'\').fadeToggle(\'slow\');">See Final Decision</a>
                                     </div>
                                 </div>';
                             }

@@ -6,61 +6,43 @@
     }
 
     $userID = $_SESSION['credentials']['user_id'];
+    $msg = "";
 
     // Get the case ID from the post array
     if(isset($_GET['caseID']) && is_numeric($_GET['caseID'])){
         $caseID = intval($_GET['caseID']);
-        $suitableConciliators = [];
+
         // Check if the case belongs to user
         $query = "SELECT * FROM Lawsuit WHERE `id` = '$caseID' AND `judge_id` = '$userID'";
         if ($result = mysqli_query($db,$query)){
             $count = mysqli_num_rows($result);
-            // If count is 1, user exists.
             if ($count == 1) {
                 // Case belongs to user.
-
-                // Get the (lowercase) category for that case
-                $caseCategory = "n/a";
-                $query = "SELECT case_category FROM Lawsuit WHERE `id` = '$caseID' AND `current_status` != '1'";
+                $query = "SELECT * FROM Lawsuit WHERE (`id` = '$caseID' AND `current_status` = '0')";
                 if ($result = mysqli_query($db,$query)){
                     $count = mysqli_num_rows($result);
-                    if ($count > 0) {
+                    if ($count == 1) {
+                        // Case is open for verdict.
                         $row = mysqli_fetch_array($result,MYSQLI_ASSOC);
-                        $regularCategory = $row['case_category'];
-                        $caseCategory = strtolower($row['case_category']);
                         
-                        // Obtain suitable conciliators for a given category
-                        $query = "SELECT c.* , u.citizen_no AS conciliatorID, u.name AS name, u.surname AS surname FROM Conciliator c
-                                INNER JOIN User u 
-                                ON c.user_id = u.id
-                                WHERE lower(`expertise`) = '$caseCategory'";
-                        if ($result = mysqli_query($db,$query)){
-                            $count = mysqli_num_rows($result);
-                            // If they exist...
-                            if ($count > 0) {
-                                while($row = mysqli_fetch_array($result,MYSQLI_ASSOC)){
-                                    array_push($suitableConciliators, $row);
-                                }
-                            }
-                        }
-
-                        // User choose the conciliator!
                         if ($_SERVER['REQUEST_METHOD'] === 'POST' ){
                             // Validate the inputs.
                             if(isset(
-                                $_POST['conciliator_id']
+                                $_POST['final_decision']
                             )){
                                 // Secure the inputs.
-                                $conciliator_id = mysqli_real_escape_string($db, $_POST['conciliator_id']);
+                                $final_decision = mysqli_real_escape_string($db, $_POST['final_decision']);
+                                $finalization_date = time();
 
                                 // Update the lawsuit.
                                 $query = "UPDATE Lawsuit SET 
-                                `current_status` = '3',
-                                `conciliator_id` = '$conciliator_id'
+                                `current_status` = '1',
+                                `finalization_date` = '$finalization_date',
+                                `final_decision` = '$final_decision'
                                 WHERE `id` = $caseID AND `judge_id` = $userID LIMIT 1";
 
                                 if (mysqli_query($db, $query)) {
-                                    $msg = "Success! Case is sent for out-of-court settlement.";
+                                    $msg = "Success! Case is closed.";
                                     echo '<script>alert("' . $msg . '");window.location.replace("cases.php");</script>';
                                 } else {
                                     $msg = "Error! Invalid entry." . mysqli_error($db) . "";
@@ -68,11 +50,14 @@
                                 }
                             }
                         }
-
                     } else {
-                        $msg = "Error! Case could not be found.";
+                        $msg = "Error! This case is not available for verdict.";
                         die($msg);
                     }
+                } else {
+                    // Case is not open.
+                    $msg = "Error! Case could not be found.";
+                    die($msg);
                 }
             } else {
                 // Case does not belong to user.
@@ -87,12 +72,11 @@
 ?>
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="utf-8">
-    <title>NJIS - Choose Conciliator for Your Case</title>
+    <title>NJIS - Give a Verdict for Your Case</title>
     <meta name="description"
-        content="Choose a suitable conciliator - National Judiciary Informatics System">
+        content="Give a Verdict for Case - National Judiciary Informatics System">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="" name="keywords">
 
@@ -163,70 +147,28 @@
         <!--==========================
       Services Section
     ============================-->
-        <section id="services">
+        <section>
             <div class="container" style="margin-top:40px;">
                 <div class="section-header">
-                    <h2>Choose A Suitable Conciliator for Case #<?php echo $caseID;?></h2>
-                    <p>You can choose the following conciliators for <b><?php echo $regularCategory; ?></b> type of cases such as this case:</p>
+                    <h2>Give a verdict for Case #<?php echo $caseID;?></h2>
+                    <p>Please fill the following input for your <b>final decision</b> on the case. This case will be closed after the verdict.</p>
                 </div>
                 <div class="card-display" style="margin-top:0px;">
-                    <h4>Suitable Conciliators</h4><br>
-                    <div class="row" id="conciliator-display">
-                        <?php 
-                            if(count($suitableConciliators) > 0){
-                                foreach($suitableConciliators as $user){
-                                    echo '
-                                    <div class="col-lg-5">
-                                        <div class="box wow fadeInLeft lawsuit-option">
-                                            <div class="icon"><i class="fas fa-user"></i></div>
-                                            <h4 class="title"><a href="">'.$user['name']." ".$user['surname'].'</a></h4>
-                                            <p class="description">
-                                            Citizen ID: <a href="#">'.$user['conciliatorID'].'</a><br>
-                                            Expertise: ' . $user['expertise'] . '<br>Rating: ' . $user['rating'] . '<br>
-                                            </p><br>
-                                            <form method="POST" action="conciliators.php?caseID='.$caseID.'">
-                                                <input type="hidden" name="conciliator_id" value="'.$user['user_id'].'" />
-                                                <input type="submit" hidden id="submit_'.$user['user_id'].'"/>
-                                            </form>
-                                            <a href="#" onclick="$(\'#submit_'.$user['user_id'].'\').click()">Choose as a Conciliator</a><br>
-                                        </div>
+                    <h4 style="margin-bottom:0;">Verdict</h4><br>
+                    <div class="form">
+                        <form action="verdict.php?caseID=<?php echo $caseID; ?>" method="POST" role="form" class="contactForm">
+                            <div class="row" id="conciliator-display">
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <textarea class="login_input" type="text" name="final_decision" style="width:100%;min-height:200px;" data-rule="required" data-msg="This field is required."></textarea>
+                                        <div class="validation"></div>
                                     </div>
-                                    ';
-                                }
-                            } else {
-                                echo '<div class="col-lg-5"><p>No suitable conciliators found for this case.</p></div>';
-                            }
-                        ?>
-                        
-                        <!--
-                        <div class="col-lg-4">
-                            <div class="box wow fadeInLeft lawsuit-option">
-                                <div class="icon"><i class="fas fa-landmark"></i></div>
-                                <h4 class="title"><a href="">Trial #00001</a></h4>
-                                <p class="description">Between: <br> <a href="#">User#0001</a> & <a href="#">User#0002</a></p><br>
-                                <a href="#">View Court Room</a><br>
-                                <a href="#">Final Verdict</a>
+                                    <div class="">
+                                        <input class="signUpButton" type="submit" value="Close The Case" style="width:100%;">
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-lg-4">
-                            <div class="box wow fadeInLeft lawsuit-option">
-                                <div class="icon"><i class="fas fa-landmark"></i></div>
-                                <h4 class="title"><a href="">Trial #00002</a></h4>
-                                <p class="description">Between: <br> <a href="#">User#0002</a> & <a href="#">User#0003</a></p><br>
-                                <a href="#">View Court Room</a><br>
-                                <a href="#">Final Verdict</a>
-                            </div>
-                        </div>
-                        <div class="col-lg-4">
-                            <div class="box wow fadeInLeft lawsuit-option">
-                                <div class="icon"><i class="fas fa-landmark"></i></div>
-                                <h4 class="title"><a href="">Trial #00003</a></h4>
-                                <p class="description">Between: <br> <a href="#">User#0003</a> & <a href="#">User#0001</a></p><br>
-                                <a href="#">View Court Room</a><br>
-                                <a href="#">Final Verdict</a>
-                            </div>
-                        </div>
-                        -->
+                        </form>
                     </div>
                 </div>
             </div>

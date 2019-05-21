@@ -136,8 +136,9 @@
                                         <p class="description">
                                         Victim ID: <a href="#">'.$oc['victimNo'].'</a><br>
                                         Suspect ID: <a href="#">'.$oc['suspectNo'].'</a></p><br>
+                                        Description: '.$oc['description'].'<br><br>
                                         <a href="conciliators.php?caseID='.$oc['id'].'">Assign Conciliator</a><br>
-                                        <a href="#">Give a Verdict</a>
+                                        <a href="verdict.php?caseID='.$oc['id'].'">Give a Verdict</a>
                                     </div>
                                 </div>
                                 ';
@@ -188,7 +189,12 @@
                                         Date of Finalization: '.date("d.m.Y  H:i",$pc['finalization_date']).'<br><br>
                                         Victim ID: <a href="#">'.$pc['victimNo'].'</a><br>
                                         Suspect ID: <a href="#">'.$pc['suspectNo'].'</a></p><br>
-                                        <a href="#">See Final Decision</a>
+                                        Description: '.$pc['description'].'<br><br>
+                                        <span style="display:none;" id="finaldecision_'.$pc['id'].'">
+                                            <br><br>Final Decision: '.$pc['final_decision'].'
+                                        </span>
+                                        </p><br>
+                                        <a href="#finaldecision_'.$pc['id'].'" onclick="$(\'#finaldecision_'.$pc['id'].'\').fadeToggle(\'slow\');">See Final Decision</a>
                                     </div>
                                 </div>
                                 ';

@@ -35,7 +35,7 @@
         if ($result = mysqli_query($db, $query)) {
             $count = mysqli_num_rows($result);
             // If count is 1, user exists.
-            if ($count == 1) {
+            if ($count > 0) {
                 // Validate the inputs.
                 if (isset($userID,
                 $_POST['phone_no'],
