@@ -167,7 +167,6 @@
                 <ul class="nav-menu">
                     <li><a href="cases.php">My Cases</a></li>
                     <li><a href="trials.php">Trials</a></li>
-                    <li><a href="conciliators.php">Conciliators</a></li>
                     <li class="menu-has-children menu-active"><a>Account - Judge <?php echo getUsername($db);?></a>
                         <ul>
                             <li class="menu-active"><a href="manage.php">Manage Account</a></li>

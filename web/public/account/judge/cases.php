@@ -98,7 +98,6 @@
                 <ul class="nav-menu">
                     <li class="menu-active"><a href="">My Cases</a></li>
                     <li><a href="trials.php">Trials</a></li>
-                    <li><a href="conciliators.php">Conciliators</a></li>
                     <li class="menu-has-children"><a>Account - Judge <?php echo getUsername($db);?></a>
                         <ul>
                             <li><a href="manage.php">Manage Account</a></li>
@@ -137,7 +136,7 @@
                                         <p class="description">
                                         Victim ID: <a href="#">'.$oc['victimNo'].'</a><br>
                                         Suspect ID: <a href="#">'.$oc['suspectNo'].'</a></p><br>
-                                        <a href="#">Assign Conciliator</a><br>
+                                        <a href="conciliators.php?caseID='.$oc['id'].'">Assign Conciliator</a><br>
                                         <a href="#">Give a Verdict</a>
                                     </div>
                                 </div>
