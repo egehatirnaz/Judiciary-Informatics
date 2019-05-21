@@ -4,6 +4,60 @@
         header("Location: ../../login.php");
         die();
     }
+
+    // Get citizen ID for display purposes.
+    $userID = $_SESSION['credentials']['user_id'];
+    $query = "SELECT citizen_no FROM User WHERE `id` = '$userID'";
+    $result = mysqli_query($db,$query);
+    $row = mysqli_fetch_array($result,MYSQLI_ASSOC);
+    $userCitizenID = $row['citizen_no'];
+
+    $awaiting_cases = [];
+    $query = "SELECT l.* , s.citizen_no AS suspectNo, v.citizen_no AS victimNo FROM Lawsuit l
+    INNER JOIN User s 
+    ON l.suspect_id = s.id
+    INNER JOIN User v 
+    ON l.victim_id = v.id 
+    WHERE (l.suspect_id = '$userID' OR l.victim_id = '$userID') AND l.current_status = '2'";
+    if ($result = mysqli_query($db,$query)){
+        $count = mysqli_num_rows($result);
+        if ($count > 0) {
+            while($row = mysqli_fetch_array($result,MYSQLI_ASSOC)){
+                array_push($awaiting_cases, $row);
+            }
+        }
+    }
+
+    $ongoing_cases = [];
+    $query = "SELECT l.* , s.citizen_no AS suspectNo, v.citizen_no AS victimNo FROM Lawsuit l
+    INNER JOIN User s 
+    ON l.suspect_id = s.id
+    INNER JOIN User v 
+    ON l.victim_id = v.id 
+    WHERE (l.suspect_id = '$userID' OR l.victim_id = '$userID') AND l.current_status = '0'";
+    if ($result = mysqli_query($db,$query)){
+        $count = mysqli_num_rows($result);
+        if ($count > 0) {
+            while($row = mysqli_fetch_array($result,MYSQLI_ASSOC)){
+                array_push($ongoing_cases, $row);
+            }
+        }
+    }
+    $previous_cases = [];
+    $query = "SELECT l.* , s.citizen_no AS suspectNo, v.citizen_no AS victimNo FROM Lawsuit l
+    INNER JOIN User s 
+    ON l.suspect_id = s.id
+    INNER JOIN User v 
+    ON l.victim_id = v.id 
+    WHERE (l.suspect_id = '$userID' OR l.victim_id = '$userID') AND l.current_status = '1'";
+    if ($result = mysqli_query($db,$query)){
+        $count = mysqli_num_rows($result);
+        if ($count > 0) {
+            while($row = mysqli_fetch_array($result,MYSQLI_ASSOC)){
+                array_push($previous_cases, $row);
+            }
+        }
+    }
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -87,10 +141,10 @@
             <div class="container" style="margin-top:40px;">
                 <div class="section-header">
                     <h2>My Lawsuits</h2>
-                    <p>In order to see detailed information, please click on each lawsuit. </p>
+                    <p>Your ongoing and previous case details are shown below:</p>
                 </div>
                 <div class="lawsuit-category">
-                    <a href="#">Ongoing</a> | <a href="#">Previous</a>
+                    <a href="#requested-lawsuit-display">Requested</a> |<a href="#lawsuit-display">Ongoing</a> | <a href="#closedlawsuit-display">Previous</a>
                 </div>
                 <div class="card-display" style="margin-top:50px;">
                     <div class="row">
@@ -102,7 +156,123 @@
                             </div>
                         </div>
                     </div>
+                    <h4>Requested Cases</h4>
+                    <div class="row" id="requested-lawsuit-display">
+                        <?php
+                        foreach($awaiting_cases as $oc){
+                            if($userCitizenID == $oc['victimNo']){
+                                echo '
+                                <div class="col-lg-5">
+                                    <div class="box wow fadeInLeft lawsuit-option">
+                                        <div class="icon"><i class="fa fa-balance-scale"></i></div>
+                                        <h4 class="title"><a href="">Case #'.$oc['id'].'</a></h4>
+                                        <p class="description">
+                                        <b>Victim ID: <a href="#">'.$oc['victimNo'].'</a></b><br>
+                                        Suspect ID: <a href="#">'.$oc['suspectNo'].'</a><br>
+                                        Description: '.$oc['description'].'<br>
+                                        <b>Awaiting for a Lawyer action.</b><br><br>
+                                        </p>
+                                    </div>
+                                </div>
+                                ';
+                            } else if($userCitizenID == $oc['suspectNo']){
+                                echo '
+                                <div class="col-lg-5">
+                                    <div class="box wow fadeInLeft lawsuit-option">
+                                        <div class="icon"><i class="fa fa-balance-scale"></i></div>
+                                        <h4 class="title"><a href="">Case #'.$oc['id'].'</a></h4>
+                                        <p class="description">
+                                        Victim ID: <a href="#">'.$oc['victimNo'].'</a><br>
+                                        <b>Suspect ID: <a href="#">'.$oc['suspectNo'].'</a></b><br>
+                                        Description: '.$oc['description'].'<br>
+                                        <b>Awaiting for a Lawyer action.</b><br><br>
+                                        </p>
+                                    </div>
+                                </div>
+                                ';
+                            }
+                        }
+                        ?>
+                    </div>
+                    <h4>Ongoing Cases</h4>
                     <div class="row" id="lawsuit-display">
+                        <?php
+                        foreach($ongoing_cases as $oc){
+                            if($userCitizenID == $oc['victimNo']){
+                                echo '
+                                <div class="col-lg-5">
+                                    <div class="box wow fadeInLeft lawsuit-option">
+                                        <div class="icon"><i class="fa fa-balance-scale"></i></div>
+                                        <h4 class="title"><a href="">Case #'.$oc['id'].'</a></h4>
+                                        <p class="description">
+                                        <b>Victim ID: <a href="#">'.$oc['victimNo'].'</a></b><br>
+                                        Suspect ID: <a href="#">'.$oc['suspectNo'].'</a><br>
+                                        Description: '.$oc['description'].'<br><br>
+                                        </p>
+                                        <a href="#">Negotiate with Conciliator</a><br>
+                                    </div>
+                                </div>
+                                ';
+                            } else if($userCitizenID == $oc['suspectNo']){
+                                echo '
+                                <div class="col-lg-5">
+                                    <div class="box wow fadeInLeft lawsuit-option">
+                                        <div class="icon"><i class="fa fa-balance-scale"></i></div>
+                                        <h4 class="title"><a href="">Case #'.$oc['id'].'</a></h4>
+                                        <p class="description">
+                                        Victim ID: <a href="#">'.$oc['victimNo'].'</a><br>
+                                        <b>Suspect ID: <a href="#">'.$oc['suspectNo'].'</a></b><br>
+                                        Description: '.$oc['description'].'<br><br>
+                                        </p>
+                                        <a href="#">Negotiate with Conciliator</a><br>
+                                    </div>
+                                </div>
+                                ';
+                            }
+                        }
+                        ?>
+                    </div>
+                    <div class="card-display" style="margin-top:0px;">
+                        <h4>Previous Cases</h4>
+                        <div class="row" id="closedlawsuit-display">
+                        <?php
+                        foreach($previous_cases as $oc){
+                            if($userCitizenID == $oc['victimNo']){
+                                echo '
+                                <div class="col-lg-5">
+                                    <div class="box wow fadeInLeft lawsuit-option">
+                                        <div class="icon"><i class="fa fa-balance-scale"></i></div>
+                                        <h4 class="title"><a href="">Case #'.$oc['id'].'</a></h4>
+                                        <p class="description">
+                                        Date of Finalization: '.date("d.m.Y  H:i",$oc['finalization_date']).'<br><br>
+                                        <b>Victim ID: <a href="#">'.$oc['victimNo'].'</a></b><br>
+                                        Suspect ID: <a href="#">'.$oc['suspectNo'].'</a><br>
+                                        Description: '.$oc['description'].'<br><br>
+                                        </p>
+                                        <a href="#">See Final Verdict</a><br>
+                                    </div>
+                                </div>
+                                ';
+                            } else if($userCitizenID == $oc['suspectNo']){
+                                echo '
+                                <div class="col-lg-5">
+                                    <div class="box wow fadeInLeft lawsuit-option">
+                                        <div class="icon"><i class="fa fa-balance-scale"></i></div>
+                                        <h4 class="title"><a href="">Case #'.$oc['id'].'</a></h4>
+                                        <p class="description">
+                                        Date of Finalization: '.date("d.m.Y  H:i",$oc['finalization_date']).'<br><br>
+                                        Victim ID: <a href="#">'.$oc['victimNo'].'</a><br>
+                                        <b>Suspect ID: <a href="#">'.$oc['suspectNo'].'</a></b><br>
+                                        Description: '.$oc['description'].'<br><br>
+                                        </p>
+                                        <a href="#">See Final Verdict</a><br>
+                                    </div>
+                                </div>
+                                ';
+                            }
+                        }
+                        ?>
+                        <!--
                         <div class="col-lg-5">
                             <div class="box wow fadeInLeft lawsuit-option">
                                 <div class="icon"><i class="fa fa-gavel"></i></div>
@@ -130,6 +300,7 @@
                                 <a href="#">Negotiate With Conciliator</a>
                             </div>
                         </div>
+                        -->
                     </div>
                 </div>
             </div>

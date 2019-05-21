@@ -119,7 +119,7 @@
             <div class="container" style="margin-top:40px;">
                 <div class="section-header">
                     <h2>My Cases</h2>
-                    <p>Your ongoing and previous cases details are shown below:</p>
+                    <p>Your ongoing and previous case details are shown below:</p>
                 </div>
                 <div class="lawsuit-category">
                     <a href="#">Ongoing</a> | <a href="#">Closed</a>

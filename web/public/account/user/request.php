@@ -6,15 +6,6 @@
         die();
     }
 
-    // Get the existing Courts
-    $courts = [];
-    $query = "SELECT * FROM Court";
-    if ($result = mysqli_query($db,$query)){
-        while($row = mysqli_fetch_array($result,MYSQLI_ASSOC)){
-            array_push($courts, [$row['id'], $row['name'], $row['city'], $row['district']]);
-        }
-    }
-
     if ($_SERVER['REQUEST_METHOD'] === 'POST' ){
         $msg = "";
     
@@ -22,15 +13,13 @@
         if(isset(
             $_POST['victim'], 
             $_POST['suspect'],
-            $_POST['category'], 
-            $_POST['court'],
+            $_POST['category'],
             $_POST['description']
         )){
             // Secure the inputs.
             $victim_id = mysqli_real_escape_string($db, $_POST['victim']);
             $suspect_id = mysqli_real_escape_string($db, $_POST['suspect']);
             $category = mysqli_real_escape_string($db, $_POST['category']);
-            $court_id = mysqli_real_escape_string($db, $_POST['court']);
             $description = mysqli_real_escape_string($db, $_POST['description']);
             $filing_date = time();
 
@@ -62,48 +51,23 @@
                 `filing_date`,
                 `case_category`,
                 `current_status`,
-                `court_id`,
-                `judge_id`,
-                `filed_lawyer_id`
+                `victim_id`,
+                `suspect_id`
             )
             VALUES (
                 '$description',
                 '$filing_date',
                 '$category',
-                '0',
-                '$court_id',
-                '12',
-                '13'
+                '2',
+                '$victim_id',
+                '$suspect_id'
             )";
             if (mysqli_query($db, $query)) {
-                $lawsuit_id = mysqli_insert_id($db);
-                $query2 = "INSERT INTO Associated (
-                    `lawsuit_id`,
-                    `user_id`,
-                    `is_victim`,
-                    `is_suspect`
-                )
-                VALUES (
-                    '$lawsuit_id',
-                    '$victim_id',
-                    '1',
-                    '0'
-                ),(
-                    '$lawsuit_id',
-                    '$suspect_id',
-                    '0',
-                    '1'
-                )";
-                if(mysqli_query($db, $query2)){
-                    $msg = "Success! Your new lawsuit is filed for processing.";
-                    echo '<script>
-                    alert("'.$msg.'");
-                    window.location.replace("lawsuits.php");
-                    </script>';
-                } else {
-                    $msg = "Error! Suspect/Victim could not be added." . mysqli_error($db) . "";
-                    die($msg);
-                }
+                $msg = "Success! Your new lawsuit is filed for processing.";
+                echo '<script>
+                alert("'.$msg.'");
+                window.location.replace("lawsuits.php");
+                </script>';
             } else {
                 $msg = "Error! New entry could not be entered to lawsuit database." . mysqli_error($db) . "";
                     die($msg);
@@ -213,28 +177,17 @@
                                     <input class="login_input" type="text" name="victim" data-rule="required" data-msg="This field is required.">
                                     <div class="validation"></div>
                                 </div>
-                                <div class="box wow fadeInLeft form-group">
-                                    <p class="login_description">Suspect ID:</p>
-                                    <input class="login_input" type="text" name="suspect" data-rule="required" data-msg="This field is required.">
-                                    <div class="validation"></div>
-                                </div>
-                            </div>
-                            <div class="col-lg-3">
                                 <div class="box wow fadeInLeft form-group"> <!-- This should be a dropdown. -->
                                     <p class="login_description">Category:</p>
                                     <input class="login_input" type="text" name="category" data-rule="required" data-msg="This field is required.">
                                     <div class="validation"></div>
                                 </div>
-                                <div class="box wow fadeInLeft form-group"> <!-- This should be a dropdown. -->
-                                    <p class="login_description">Court:</p>
-                                    <select name="court" style="white-space: normal;" required>
-                                        <option value="" selected disabled>Pick a Court</option>
-                                        <?php
-                                            foreach($courts as $court){
-                                                echo '<option value="'.$court[0].'">'.$court[2].' - '.$court[3].' - '.$court[1].'</option>';
-                                            }
-                                        ?>
-                                    </select>
+                            </div>
+                            <div class="col-lg-3">
+                                <div class="box wow fadeInLeft form-group">
+                                    <p class="login_description">Suspect ID:</p>
+                                    <input class="login_input" type="text" name="suspect" data-rule="required" data-msg="This field is required.">
+                                    <div class="validation"></div>
                                 </div>
                             </div>
                         </div>

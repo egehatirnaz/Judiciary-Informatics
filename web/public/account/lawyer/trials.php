@@ -4,6 +4,40 @@
         header("Location: ../../login.php");
         die();
     }
+
+    $userID = $_SESSION['credentials']['user_id'];
+    $ongoing_trials = [];
+    $query = "SELECT l.* , s.citizen_no AS suspectID, v.citizen_no AS victimID, la.citizen_no AS judgeID, c.name AS courtName, c.city AS courtCity, c.district AS courtDistrict FROM Trial l 
+    INNER JOIN Lawsuit ls ON l.lawsuit_id = ls.id 
+    INNER JOIN User s ON ls.suspect_id = s.id 
+    INNER JOIN User v ON ls.victim_id = v.id 
+    INNER JOIN User la ON ls.judge_id = la.id
+    INNER JOIN Court c ON ls.court_id = c.id
+    WHERE ls.filed_lawyer_id = '$userID' AND ls.current_status = '0'";
+    if ($result = mysqli_query($db,$query)){
+        $count = mysqli_num_rows($result);
+        if ($count == 1) {
+            while($row = mysqli_fetch_array($result,MYSQLI_ASSOC)){
+                array_push($ongoing_trials, $row);
+            }
+        }
+    }
+    $previous_trials = [];
+    $query = "SELECT l.* , s.citizen_no AS suspectID, v.citizen_no AS victimID, la.citizen_no AS judgeID, c.name AS courtName, c.city AS courtCity, c.district AS courtDistrict, ls.finalization_date FROM Trial l 
+    INNER JOIN Lawsuit ls ON l.lawsuit_id = ls.id 
+    INNER JOIN User s ON ls.suspect_id = s.id 
+    INNER JOIN User v ON ls.victim_id = v.id 
+    INNER JOIN User la ON ls.judge_id = la.id
+    INNER JOIN Court c ON ls.court_id = c.id
+    WHERE ls.filed_lawyer_id = '$userID' AND ls.current_status = '1'";
+    if ($result = mysqli_query($db,$query)){
+        $count = mysqli_num_rows($result);
+        if ($count == 1) {
+            while($row = mysqli_fetch_array($result,MYSQLI_ASSOC)){
+                array_push($previous_trials, $row);
+            }
+        }
+    }
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -89,7 +123,7 @@
             <div class="container" style="margin-top:40px;">
                 <div class="section-header">
                     <h2>Trials</h2>
-                    <p>In order to see detailed information, please click on each trial. </p>
+                    <p>Your ongoing and previous trial details are the shown below:</p>
                 </div>
                 <div class="lawsuit-category">
                     <a href="#">Ongoing</a> | <a href="#">Previous</a>
@@ -97,6 +131,27 @@
                 <div class="card-display" style="margin-top:0px;">
                     <h4>Ongoing Trials</h4>
                     <div class="row" id="case-display">
+                        <?php
+                            foreach($ongoing_trials as $ot){
+                                echo '
+                                <div class="col-lg-6">
+                                    <div class="box wow fadeInLeft lawsuit-option">
+                                        <div class="icon"><i class="fas fa-landmark"></i></div>
+                                        <h4 class="title"><a href="">Trial #'.$ot['id'].'</a></h4>
+                                        <p class="description">
+                                        Victim: <a href="#">'.$ot['victimID'].'</a><br>
+                                        Suspect: <a href="#">'.$ot['suspectID'].'</a>
+                                        <br><br>
+                                        Place: '.$ot['courtName'].', '.$ot['courtDistrict'].', '.$ot['courtCity'].'<br>
+                                        Court Room: '.$ot['court_room'].'<br>
+                                        Assigned Judge: <a href="#">'.$ot['judgeID'].'</a><br>
+                                        Description: '.$ot['description'].'
+                                        </p><br>
+                                    </div>
+                                </div>';
+                            }
+                        ?>
+                        <!--
                         <div class="col-lg-4">
                             <div class="box wow fadeInLeft lawsuit-option">
                                 <div class="icon"><i class="fas fa-landmark"></i></div>
@@ -124,11 +179,35 @@
                                 <a href="#">Final Verdict</a>
                             </div>
                         </div>
+                        -->
                     </div>
                 </div>
                 <div class="card-display" style="margin-top:0px;">
                     <h4>Previous Trials</h4>
                     <div class="row" id="closedcase-display">
+                        <?php
+                            foreach($previous_trials as $pt){
+                                echo '
+                                <div class="col-lg-6">
+                                    <div class="box wow fadeInLeft lawsuit-option">
+                                        <div class="icon"><i class="fa fa-gavel"></i></div>
+                                        <h4 class="title"><a href="">Trial #'.$pt['id'].'</a></h4>
+                                        <p class="description">
+                                        Date of Finalization: '.date("d.m.Y  H:i",$pt['finalization_date']).'<br><br>
+                                        Victim: <a href="#">'.$pt['victimID'].'</a><br>
+                                        Suspect: <a href="#">'.$pt['suspectID'].'</a>
+                                        <br><br>
+                                        Place: '.$pt['courtName'].', '.$pt['courtDistrict'].', '.$pt['courtCity'].'<br>
+                                        Court Room: '.$pt['court_room'].'<br>
+                                        Assigned Judge: <a href="#">'.$pt['judgeID'].'</a><br>
+                                        Description: '.$pt['description'].'
+                                        </p><br>
+                                        <a href="#">See Final Decision</a>
+                                    </div>
+                                </div>';
+                            }
+                        ?>
+                        <!--
                         <div class="col-lg-5">
                             <div class="box wow fadeInLeft lawsuit-option">
                                 <div class="icon"><i class="fa fa-gavel"></i></div>
@@ -147,6 +226,7 @@
                                 <a href="#">See Final Verdict</a><br>
                             </div>
                         </div>
+                        -->
                     </div>
                 </div>
             </div>

@@ -4,6 +4,23 @@
         header("Location: ../../login.php");
         die();
     }
+
+    $userID = $_SESSION['credentials']['user_id'];
+    $possible_cases = [];
+    $query = "SELECT l.* , s.citizen_no AS suspectNo, v.citizen_no AS victimNo FROM Lawsuit l
+    INNER JOIN User s 
+    ON l.suspect_id = s.id
+    INNER JOIN User v 
+    ON l.victim_id = v.id 
+    WHERE l.current_status = '2'";
+    if ($result = mysqli_query($db,$query)){
+        $count = mysqli_num_rows($result);
+        if ($count > 0) {
+            while($row = mysqli_fetch_array($result,MYSQLI_ASSOC)){
+                array_push($possible_cases, $row);
+            }
+        }
+    }
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -91,6 +108,25 @@
                 </div>
                 <div class="card-display" style="margin-top:0px;">
                     <div class="row" id="case-display">
+                    <?php
+                        foreach($possible_cases as $oc){
+                            echo '
+                            <div class="col-lg-5">
+                                <div class="box wow fadeInLeft lawsuit-option">
+                                    <div class="icon"><i class="fa fa-balance-scale"></i></div>
+                                    <h4 class="title"><a href="">Case #'.$oc['id'].'</a></h4>
+                                    <p class="description">
+                                    Victim ID: <a href="#">'.$oc['victimNo'].'</a><br>
+                                    Suspect ID: <a href="#">'.$oc['suspectNo'].'</a><br>
+                                    Description: '.$oc['description'].'<br><br>
+                                    </p>
+                                    <a href="#">Accept the Case</a><br>
+                                </div>
+                            </div>
+                            ';
+                        }
+                        ?>
+                        <!--
                         <div class="col-lg-4">
                             <div class="box wow fadeInLeft lawsuit-option">
                                 <div class="icon"><i class="fa fa-balance-scale"></i></div>
@@ -115,6 +151,7 @@
                                 <a href="#">Accept the Case</a><br>
                             </div>
                         </div>
+                        -->
                     </div>
                 </div>
             </div>
