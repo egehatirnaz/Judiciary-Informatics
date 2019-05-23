@@ -9,9 +9,13 @@ Sina Şahan - 21602609
 Faruk Ege Hatırnaz - 21601441
 ```
 ## Project Website
-(Not prepared.)
+Demo is made from localhost.
+Downloading Docker and using the docker-compose will serve the project files over localhost.
+Port 8000 is used for public files and 8080 is used for phpMyAdmin.
 
 ## Files
 [Project Proposal](/reports/proposal_report.pdf)
 
 [Design Report](/reports/design_report.pdf)
+
+[Final Report](/reports/final_report.pdf)
